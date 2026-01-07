@@ -1039,16 +1039,16 @@
         <h1 class="text-[10px] md:text-sm text-white tracking-wider font-bold" style="text-shadow: 2px 2px 0 #000;">
           <a href="./" class="hover:text-pixel-accent transition-colors flex items-center gap-1" title="LSJ Watermark Remover">
             LSJ <span class="text-[#f8b800]">REMOVER</span>
-            <span class="hidden sm:inline-block pixel-badge ml-2" data-i18n="badge.free">FREE</span>
           </a>
         </h1>
       </div>
 
       <!-- 导航区域 -->
-      <nav class="flex gap-2 md:gap-3 items-center">
+      <nav class="flex gap-3 md:gap-4 items-center">
+        <!-- Principle Button -->
         <a href="https://allenkuo.medium.com/removing-gemini-ai-watermarks-a-deep-dive-into-reverse-alpha-blending-bbbd83af2a3f"
            target="_blank"
-           class="hidden md:inline-flex items-center gap-1 text-[9px] md:text-[10px] text-pixel-text-dim hover:text-pixel-primary transition-colors px-2 py-1"
+           class="hidden md:inline-flex pixel-btn bg-[#3B7DD8] text-white hover:bg-[#4a8eff] px-3 py-1.5 text-[10px] items-center gap-2"
            data-i18n="nav.principle">
           <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
             <rect x="2" y="2" width="12" height="2"/>
@@ -1059,7 +1059,29 @@
           </svg>
           HOW IT WORKS
         </a>
-        <button id="langSwitch" class="pixel-btn pixel-btn-secondary px-2 md:px-3 py-1 md:py-1.5 text-[9px] md:text-[10px]">
+
+        <!-- GitHub Button -->
+        <a href="https://github.com/RusianHu/lsj-watermark-remover"
+           target="_blank"
+           class="hidden md:inline-flex pixel-btn bg-[#333] text-white hover:bg-[#444] px-3 py-1.5 text-[10px] items-center gap-2">
+          <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
+            <rect x="2" y="5" width="2" height="2"/>
+            <rect x="12" y="5" width="2" height="2"/>
+            <rect x="3" y="4" width="2" height="1"/>
+            <rect x="11" y="4" width="2" height="1"/>
+            <rect x="4" y="3" width="2" height="1"/>
+            <rect x="10" y="3" width="2" height="1"/>
+            <rect x="4" y="6" width="8" height="7"/>
+            <rect x="5" y="13" width="6" height="1"/>
+            <rect x="6" y="8" width="1" height="2"/>
+            <rect x="9" y="8" width="1" height="2"/>
+            <rect x="7" y="10" width="2" height="1"/>
+          </svg>
+          GITHUB
+        </a>
+
+        <!-- Language Switch -->
+        <button id="langSwitch" class="pixel-btn pixel-btn-secondary px-3 py-1.5 text-[10px] min-w-[40px]">
           EN
         </button>
       </nav>
@@ -1403,6 +1425,7 @@
         <div>
           <h6 class="text-[9px] md:text-[10px] text-white mb-2 md:mb-3" data-i18n="footer.links">LINKS</h6>
           <ul class="space-y-1 md:space-y-2 text-[8px] md:text-[9px]">
+            <li><a href="https://github.com/RusianHu/lsj-watermark-remover" target="_blank" class="text-white/70 hover:text-white transition-colors">GitHub</a></li>
             <li><a href="./terms.html" class="text-white/70 hover:text-white transition-colors" data-i18n="footer.terms">Terms</a></li>
           </ul>
         </div>
