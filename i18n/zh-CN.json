@@ -3,7 +3,7 @@
   "header.title": "LSJ 水印清除器",
   "nav.principle": "工作原理",
   "main.title": "AI 图像水印清除",
-  "main.subtitle": "纯浏览器本地处理，免费、极速、无损还原",
+  "main.subtitle": "纯浏览器本地处理，数据不上云、极速、无损还原",
   "upload.text": "插入卡带 或 点击选择",
   "upload.hint": "支持 JPG, PNG, WebP 格式",
   "upload.dragHint": "或拖放文件",
