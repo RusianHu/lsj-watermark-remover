@@ -1,0 +1,5 @@
+# 排除 PHP 目录
+php/
+
+# 排除 AGENTS.md
+AGENTS.md
