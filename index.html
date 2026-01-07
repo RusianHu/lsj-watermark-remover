@@ -393,21 +393,12 @@
       100% { transform: translateY(-32px); }
     }
 
-    /* ========== 像素云朵 ========== */
-    .pixel-clouds {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
-
+    /* ========== 像素云朵 (动态生成) ========== */
     .pixel-cloud {
       position: absolute;
       background: white;
+      cursor: pointer;
+      z-index: 1; /* 提升层级以确保可点击 */
       box-shadow:
         0 8px 0 0 white,
         8px 0 0 0 white,
@@ -419,10 +410,11 @@
         0 -8px 0 0 white,
         24px 0 0 0 white,
         -24px 0 0 0 white;
-      animation: float-cloud linear infinite;
-      opacity: 0.95;
+      transition: transform 0.1s linear; /* 用于平滑移动 */
+      pointer-events: auto !important; /* 强制开启交互 */
     }
 
+    /* 云朵内部装饰 */
     .pixel-cloud::before {
       content: '';
       position: absolute;
@@ -436,17 +428,13 @@
         -32px 0 0 0 white;
     }
 
-    .pixel-cloud-1 { width: 24px; height: 16px; top: 8%; left: -100px; animation-duration: 45s; }
-    .pixel-cloud-2 { width: 32px; height: 20px; top: 15%; left: -150px; animation-duration: 55s; animation-delay: -20s; }
-    .pixel-cloud-3 { width: 20px; height: 14px; top: 25%; left: -80px; animation-duration: 40s; animation-delay: -10s; }
-    .pixel-cloud-4 { width: 28px; height: 18px; top: 5%; left: -120px; animation-duration: 50s; animation-delay: -30s; }
-    .pixel-cloud-5 { width: 22px; height: 15px; top: 35%; left: -90px; animation-duration: 48s; animation-delay: -15s; }
-    .pixel-cloud-6 { width: 18px; height: 12px; top: 12%; left: -70px; animation-duration: 42s; animation-delay: -25s; }
-
-    @keyframes float-cloud {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(calc(100vw + 200px)); }
-    }
+    /* 云朵变体 (仅定义尺寸，位置和动画由 JS 控制) */
+    .pixel-cloud-1 { width: 24px; height: 16px; }
+    .pixel-cloud-2 { width: 32px; height: 20px; }
+    .pixel-cloud-3 { width: 20px; height: 14px; }
+    .pixel-cloud-4 { width: 28px; height: 18px; }
+    .pixel-cloud-5 { width: 22px; height: 15px; }
+    .pixel-cloud-6 { width: 18px; height: 12px; }
 
     /* ========== 地面装饰 ========== */
     .pixel-ground {
@@ -986,6 +974,26 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
     }
+
+    /* ========== 交互式掉落效果 ========== */
+    @keyframes element-drop {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(20deg); opacity: 0; }
+    }
+
+    .interactive-prop {
+      cursor: pointer;
+      transition: filter 0.2s;
+    }
+
+    .interactive-prop:hover {
+      filter: brightness(1.2);
+    }
+
+    .element-dropping {
+      animation: element-drop 1.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards !important;
+      pointer-events: none; /* 掉落过程中不可再次点击 */
+    }
   </style>
 
   <!-- ES Module Import Map -->
@@ -1000,17 +1008,13 @@
   </script>
 </head>
 <body class="loading">
-  <!-- 装饰性云朵背景 -->
-  <div class="pixel-clouds">
-    <div class="pixel-cloud pixel-cloud-1"></div>
-    <div class="pixel-cloud pixel-cloud-2"></div>
-    <div class="pixel-cloud pixel-cloud-3"></div>
-    <div class="pixel-cloud pixel-cloud-4"></div>
-    <div class="pixel-cloud pixel-cloud-5"></div>
-    <div class="pixel-cloud pixel-cloud-6"></div>
+  <!-- 天空容器：专门承载云朵、星星等背景装饰 -->
+  <!-- z-index 需要高于 main(z-10)，容器设置 pointer-events-none 让透明区域穿透，云朵单独设置 pointer-events: auto -->
+  <div id="sky-container" class="fixed top-0 left-0 w-full h-[500px] overflow-hidden z-[15] pointer-events-none">
+    <!-- 云朵将由 JS 插入到这里，云朵自身设置了 pointer-events: auto -->
   </div>
 
-  <!-- 场景装饰元素 -->
+  <!-- 场景装饰元素 (飘落物) -->
   <div class="scene-decorations" id="sceneDecorations">
     <!-- 动态生成的装饰元素将插入这里 -->
   </div>
@@ -1088,9 +1092,9 @@
     </div>
   </header>
 
-  <main class="flex-grow relative z-10 pb-20 md:pb-24">
+  <main class="flex-grow relative z-10 pb-20 md:pb-24 pointer-events-none">
     <!-- 主标题区域 -->
-    <section class="relative pt-8 md:pt-12 lg:pt-16 pb-6 md:pb-8 text-center px-4">
+    <section class="relative pt-8 md:pt-12 lg:pt-16 pb-6 md:pb-8 text-center px-4 pointer-events-auto">
       <!-- 装饰性问号砖块 -->
       <div class="hidden lg:block absolute top-8 left-[10%]">
         <div class="pixel-question-block pixel-bounce" style="animation-delay: 0s;"></div>
@@ -1106,7 +1110,7 @@
         <div class="pixel-coin" style="animation-delay: 0.4s;"></div>
       </div>
 
-      <div class="inline-block bg-[#000000]/80 px-6 py-4 border-4 border-white shadow-[6px_6px_0_0_#000000] mb-6 transform -rotate-1">
+      <div class="inline-block bg-[#000000]/80 px-6 py-4 border-4 border-white shadow-[6px_6px_0_0_#000000] mb-6 transform -rotate-1 relative z-[20]">
         <h2 class="text-[#f8b800] text-lg md:text-2xl lg:text-4xl tracking-widest font-bold mb-2"
             style="text-shadow: 2px 2px 0 #b84818; -webkit-text-stroke: 0;"
             data-i18n="main.title">
@@ -1134,7 +1138,7 @@
     </div>
 
       <!-- 上传区域 -->
-      <div class="max-w-4xl mx-auto pixel-panel pixel-panel-decorated p-2 md:p-3" style="z-index: 5;">
+      <div class="max-w-4xl mx-auto pixel-panel pixel-panel-decorated p-2 md:p-3 relative z-[20]">
         <div id="uploadArea" class="pixel-upload group relative flex flex-col items-center justify-center w-full min-h-[180px] md:h-56 cursor-pointer transition-all rounded-sm">
           <div class="flex flex-col items-center justify-center py-4 md:py-6">
             <!-- 像素上传图标 -->
@@ -1163,7 +1167,7 @@
     </section>
 
     <!-- 步骤指示区 -->
-    <section class="max-w-4xl mx-auto px-4 mb-8 md:mb-12 lg:mb-16">
+    <section class="max-w-4xl mx-auto px-4 mb-8 md:mb-12 lg:mb-16 pointer-events-auto">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
         <!-- 步骤 1 -->
         <div class="pixel-step p-3 md:p-4 flex items-center gap-3 relative">
@@ -1197,7 +1201,7 @@
     </section>
 
     <!-- 单图预览区 -->
-    <section id="singlePreview" class="max-w-7xl mx-auto px-4 pb-8 md:pb-16" style="display: none;">
+    <section id="singlePreview" class="max-w-7xl mx-auto px-4 pb-8 md:pb-16 pointer-events-auto" style="display: none;">
       <div class="flex flex-col lg:flex-row gap-4 md:gap-6">
         <div class="flex-1 space-y-4 md:space-y-6">
           <!-- 原始图片 -->
@@ -1290,7 +1294,7 @@
     </section>
 
     <!-- 多图预览区 -->
-    <section id="multiPreview" class="max-w-7xl mx-auto px-4 pb-8 md:pb-16 scroll-mt-24" style="display: none;">
+    <section id="multiPreview" class="max-w-7xl mx-auto px-4 pb-8 md:pb-16 scroll-mt-24 pointer-events-auto" style="display: none;">
       <!-- 游戏化进度条 -->
       <div class="mb-4 md:mb-6">
         <div class="flex justify-between items-center mb-2">
@@ -1329,7 +1333,7 @@
     </section>
 
     <!-- 功能特点区 -->
-    <section class="bg-white/80 backdrop-blur-sm py-8 md:py-12 border-t-4 border-b-4 border-pixel-border relative z-10">
+    <section class="bg-white/80 backdrop-blur-sm py-8 md:py-12 border-t-4 border-b-4 border-pixel-border relative z-10 pointer-events-auto">
       <div class="max-w-6xl mx-auto px-4">
         <div class="text-center mb-6 md:mb-8">
           <h3 class="text-xs md:text-sm text-pixel-secondary flex items-center justify-center gap-2" data-i18n="feature.title">
@@ -1399,7 +1403,7 @@
   </main>
 
   <!-- 页脚 -->
-  <footer class="bg-pixel-ground border-t-4 border-pixel-ground-dark py-6 md:py-8 relative z-10">
+  <footer class="bg-pixel-ground border-t-4 border-pixel-ground-dark py-6 md:py-8 relative z-10 pointer-events-auto">
     <!-- 草地纹理 -->
     <div class="absolute top-0 left-0 right-0 h-3 overflow-hidden">
       <div class="w-[200%] h-full" style="background: repeating-linear-gradient(90deg, transparent 0px, transparent 8px, #8BD67A 8px, #8BD67A 12px, transparent 12px, transparent 24px); animation: grass-wave 2s linear infinite;"></div>

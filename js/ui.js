@@ -55,6 +55,207 @@ export function initElements() {
 
     // 初始化增强的拖拽效果
     initEnhancedDragEffects();
+
+    // 初始化装饰物交互（点击掉落）
+    setupInteractiveDecorations();
+
+    // 初始化动态云朵系统
+    initCloudSystem();
+}
+
+/**
+ * 动态云朵系统
+ * 使用 JS 生成和移动云朵，确保交互性
+ */
+function initCloudSystem() {
+    // 优先使用天空容器，如果没有则回退到 body
+    const container = document.getElementById('sky-container') || document.body;
+    const maxClouds = 6;
+    const clouds = [];
+
+    class Cloud {
+        constructor(isInitial = false) {
+            this.element = document.createElement('div');
+            
+            // 随机选择一个云朵变体形状
+            const variant = Math.floor(Math.random() * 6) + 1;
+            this.element.className = `pixel-cloud pixel-cloud-${variant}`;
+            
+            // 随机参数
+            const scale = 1.2 + Math.random() * 1.0;
+            this.speed = 0.3 + Math.random() * 0.4; // 移动速度
+            
+            // 初始位置
+            // 相对于容器宽度
+            this.x = isInitial ? Math.random() * container.offsetWidth : -150;
+            
+            // 垂直位置：在容器高度内随机分布，稍微避开最顶部（header）
+            // 容器高度设为了 500px，我们在 50px ~ 400px 之间生成
+            this.y = 50 + Math.random() * 350;
+            
+            this.scale = scale;
+            this.isDropping = false;
+
+            // 应用初始样式
+            this.updateTransform();
+            
+            // 插入 DOM
+            container.appendChild(this.element);
+            
+            // 设置 dataset 以便事件委托识别
+            this.element.dataset.type = 'cloud';
+            
+            // 强制启用指针事件，确保能点到
+            this.element.style.pointerEvents = 'auto';
+        }
+
+        update() {
+            if (this.isDropping) return false; // 掉落中不由我们控制移动
+
+            this.x += this.speed;
+            
+            // 检查是否被标记为掉落（由全局事件处理器处理）
+            if (this.element.dataset.dropping === 'true') {
+                this.isDropping = true;
+                return false; // 移除出管理列表
+            }
+
+            // 检查是否超出容器右侧 (使用容器宽度而非窗口宽度，更准确)
+            if (this.x > container.offsetWidth + 100) {
+                this.element.remove();
+                return false; // 需要销毁
+            }
+
+            this.updateTransform();
+            return true; // 继续存在
+        }
+
+        updateTransform() {
+            this.element.style.transform = `translate(${this.x}px, ${this.y}px) scale(${this.scale})`;
+        }
+    }
+
+    // 初始化生成一批云朵
+    for (let i = 0; i < maxClouds; i++) {
+        clouds.push(new Cloud(true));
+    }
+
+    // 游戏循环
+    function gameLoop() {
+        // 更新现有云朵
+        for (let i = clouds.length - 1; i >= 0; i--) {
+            if (!clouds[i].update()) {
+                clouds.splice(i, 1);
+            }
+        }
+
+        // 补充新云朵
+        if (clouds.length < maxClouds && Math.random() < 0.005) {
+            clouds.push(new Cloud(false));
+        }
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+}
+
+/**
+ * 设置页面装饰元素的交互效果（点击掉落）
+ * 使用事件委托以支持动态添加的元素
+ */
+function setupInteractiveDecorations() {
+    const targetClasses = [
+        'pixel-question-block',
+        'pixel-coin',
+        'pixel-star',
+        'pixel-bush',
+        'pixel-cloud'
+    ];
+
+    // 为所有现有元素添加鼠标指针样式
+    const addCursorStyle = () => {
+        const selector = targetClasses.map(c => `.${c}`).join(',');
+        document.querySelectorAll(selector).forEach(el => {
+            el.classList.add('interactive-prop');
+        });
+    };
+    
+    // 初始执行一次
+    addCursorStyle();
+
+    // 监听 body 的点击事件
+    document.body.addEventListener('click', (e) => {
+        // 查找最近的匹配元素
+        const target = e.target.closest(targetClasses.map(c => `.${c}`).join(','));
+        
+        if (target && !target.dataset.dropping) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // 标记为正在掉落
+            target.dataset.dropping = 'true';
+
+            // 1. 获取当前精确的屏幕位置和尺寸
+            const rect = target.getBoundingClientRect();
+            
+            // 2. 锁定元素位置：从文档流/动画流中剥离，改为 Fixed 定位
+            // 这一步至关重要，它能“冻结”住飘动的云朵
+            target.style.position = 'fixed';
+            target.style.left = `${rect.left}px`;
+            target.style.top = `${rect.top}px`;
+            
+            // 如果是云朵，它可能有缩放，getBoundingClientRect 获取的是缩放后的尺寸
+            // 我们需要保持这个视觉尺寸
+            target.style.width = `${rect.width}px`;
+            target.style.height = `${rect.height}px`;
+            
+            target.style.margin = '0';
+            target.style.transform = 'translate(0, 0)'; // 重置 transform，因为位置已经是绝对坐标了
+            target.style.animation = 'none'; // 停止所有 CSS 动画
+            target.style.transition = 'none'; // 停止 JS 驱动的 transition
+            target.style.zIndex = '9999'; // 确保在最上层
+            target.style.pointerEvents = 'none'; // 避免再次点击
+
+            // 3. 计算物理参数
+            // 随机旋转方向和角度 (Unity 风格的随机力矩)
+            const rotateDir = Math.random() > 0.5 ? 1 : -1;
+            const rotation = (15 + Math.random() * 30) * rotateDir; // 15~45度
+            // 掉落距离：屏幕高度 + 自身高度 + 缓冲
+            const dropDist = window.innerHeight - rect.top + rect.height + 50;
+            
+            // 4. 使用 Web Animations API 执行高性能物理掉落
+            // 模拟重力加速曲线 (cubic-bezier)
+            const animation = target.animate([
+                {
+                    transform: 'translate(0, 0) rotate(0deg)',
+                    opacity: 1
+                },
+                {
+                    transform: `translate(0, ${dropDist}px) rotate(${rotation}deg)`,
+                    opacity: 0
+                }
+            ], {
+                duration: 800, // 800ms 快速下坠
+                easing: 'cubic-bezier(0.55, 0.085, 0.68, 0.53)', // 模拟重力加速
+                fill: 'forwards'
+            });
+
+            // 动画结束后移除元素
+            animation.onfinish = () => target.remove();
+        }
+    });
+
+    // 监听 DOM 变化，为新元素添加鼠标样式 (使用 MutationObserver)
+    const observer = new MutationObserver((mutations) => {
+        let shouldUpdate = false;
+        mutations.forEach(mutation => {
+            if (mutation.addedNodes.length) shouldUpdate = true;
+        });
+        if (shouldUpdate) addCursorStyle();
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
 }
 
 /**
