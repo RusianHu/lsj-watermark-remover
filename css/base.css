@@ -1,0 +1,114 @@
+/**
+ * LSJ Watermark Remover - Base Styles
+ * 基础样式：像素化渲染、字体切换、滚动条、主体背景
+ * 
+ * 设计风格：复古横版像素游戏
+ * 配色：天空蓝渐变背景 (#5c94fc → #92ccff)
+ */
+
+/* ========================================
+   像素化渲染
+   全局应用，保持像素风格一致性
+   ======================================== */
+* {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* ========================================
+   语言字体切换
+   中文使用 fusion-pixel 优先，英文使用 Press Start 2P
+   ======================================== */
+
+/* 中文模式 */
+html:lang(zh-CN) body,
+html:lang(zh-CN) button,
+html:lang(zh-CN) input,
+html:lang(zh-CN) select,
+html:lang(zh-CN) textarea,
+html:lang(zh-CN) [data-i18n] {
+  font-family: "fusion-pixel-12px-proportional-zh_hans", "Press Start 2P", "Microsoft YaHei", sans-serif !important;
+}
+
+/* 英文模式 */
+html:lang(en-US) body,
+html:lang(en-US) button,
+html:lang(en-US) input,
+html:lang(en-US) select {
+  font-family: "Press Start 2P", sans-serif !important;
+}
+
+/* ========================================
+   主体背景
+   天空渐变效果，复古游戏风格
+   ======================================== */
+body {
+  background: linear-gradient(180deg, #5c94fc 0%, #92ccff 100%);
+  color: #202020;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 加载状态过渡 */
+body.loading {
+  opacity: 0;
+}
+
+body {
+  transition: opacity 0.3s ease;
+}
+
+/* ========================================
+   滚动条样式
+   像素化天空主题滚动条
+   ======================================== */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #B0E0F6;
+  border: 2px solid #87CEEB;
+}
+
+::-webkit-scrollbar-thumb {
+  background: repeating-linear-gradient(
+    0deg,
+    #5B8DBF 0px,
+    #5B8DBF 8px,
+    #4A7FB8 8px,
+    #4A7FB8 16px
+  );
+  border: 2px solid #B0E0F6;
+}
+
+/* ========================================
+   透明度网格背景
+   用于图片预览区域，显示透明度
+   ======================================== */
+.pixel-transparency-grid {
+  background-image:
+    linear-gradient(45deg, #e2e8f0 25%, transparent 25%),
+    linear-gradient(-45deg, #e2e8f0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e2e8f0 75%),
+    linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+  background-color: #f7fafc;
+}
+
+/* ========================================
+   Medium Zoom 样式
+   图片点击放大效果
+   ======================================== */
+.medium-zoom-overlay,
+.medium-zoom-image--opened {
+  z-index: 999;
+}
+
+.medium-zoom-overlay {
+  backdrop-filter: blur(4px);
+  background: rgba(135, 206, 235, 0.9) !important;
+}

@@ -8,6 +8,7 @@ import * as ui from './ui.js';
 import * as processor from './imageProcessor.js';
 import { downloadAll } from './download.js';
 import { showLoading, hideLoading } from './utils.js';
+import { initDecorations, triggerCoinEffect } from './decorations.js';
 
 // Import medium-zoom from CDN (via importmap)
 import mediumZoom from 'medium-zoom';
@@ -33,6 +34,9 @@ async function init() {
         
         // Initialize UI elements
         ui.initElements();
+        
+        // Initialize game-style decorations (clouds, stars, interactions)
+        initDecorations();
         
         // Setup language switch
         ui.setupLanguageSwitch(() => {

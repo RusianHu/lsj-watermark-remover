@@ -1,0 +1,481 @@
+/**
+ * LSJ Watermark Remover - Component Styles
+ * 组件样式：按钮、面板、Tab、上传区域、进度条等
+ * 
+ * 设计规范：
+ * - 边框：4px 或 2px 纯黑色实线
+ * - 阴影：硬边缘像素阴影 (无模糊)
+ * - 按钮：按下时位移 + 阴影消失
+ */
+
+/* ========================================
+   像素边框工具类
+   ======================================== */
+.pixel-border {
+  border: 4px solid #000000;
+  box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+.pixel-border-light {
+  border: 3px solid #000000;
+  box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+/* ========================================
+   像素按钮样式
+   ======================================== */
+.pixel-btn {
+  position: relative;
+  border: 2px solid #000000;
+  box-shadow: 4px 4px 0 0 #000000;
+  transition: all 0.05s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+}
+
+/* 按钮光泽效果 */
+.pixel-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.3s ease;
+}
+
+.pixel-btn:hover::before {
+  left: 100%;
+}
+
+.pixel-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000000;
+}
+
+.pixel-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+/* 按钮点击波纹效果 */
+.pixel-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  border-radius: 0;
+}
+
+.pixel-btn:active::after {
+  width: 200%;
+  height: 200%;
+  transition: width 0.2s, height 0.2s;
+}
+
+/* 主要按钮 - 绿色 */
+.pixel-btn-primary {
+  background: #00a800;
+  color: #f8f8f8;
+}
+
+.pixel-btn-primary:hover {
+  background: #00c000;
+}
+
+/* 次要按钮 - 红色 */
+.pixel-btn-secondary {
+  background: #e64e4e;
+  color: white;
+}
+
+.pixel-btn-secondary:hover {
+  background: #ff5f5f;
+}
+
+/* 强调按钮 - 金色 */
+.pixel-btn-accent {
+  background: #f8b800;
+  color: #000000;
+}
+
+/* 金色渐变按钮 */
+.pixel-btn-gold {
+  background: linear-gradient(180deg, #FFD700 0%, #DAA520 100%);
+  color: #5a4a00;
+  border-color: #fff8dc #b8860b #b8860b #fff8dc;
+}
+
+/* 禁用按钮 */
+.pixel-btn-disabled {
+  background: linear-gradient(180deg, #a0aec0 0%, #718096 100%);
+  border-color: #cbd5e0 #718096 #718096 #cbd5e0;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ========================================
+   像素面板/卡片
+   ======================================== */
+.pixel-panel {
+  background: #f8f8f8;
+  border: 4px solid #000000;
+  box-shadow: 8px 8px 0 0 rgba(0, 0, 0, 0.25);
+  position: relative;
+}
+
+/* 面板装饰角 */
+.pixel-panel-decorated::before,
+.pixel-panel-decorated::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #f77622;
+}
+
+.pixel-panel-decorated::before {
+  top: -4px;
+  left: -4px;
+}
+
+.pixel-panel-decorated::after {
+  top: -4px;
+  right: -4px;
+}
+
+/* ========================================
+   Tab 样式
+   ======================================== */
+.pixel-tab {
+  position: relative;
+  background: #708090;
+  border: 2px solid #000000;
+  border-bottom: none;
+  box-shadow: none;
+  margin-right: 4px;
+  z-index: 1;
+  color: white;
+  transition: all 0.1s ease;
+  border-radius: 4px 4px 0 0;
+}
+
+.pixel-tab:hover:not(.disabled) {
+  padding-bottom: 10px !important;
+}
+
+.pixel-tab.active {
+  background: #f8f8f8;
+  color: #000000;
+  border-color: #000000;
+  z-index: 10;
+  padding-bottom: 12px !important;
+}
+
+.pixel-tab.disabled {
+  background: #505050;
+  color: #a0a0a0;
+  cursor: not-allowed;
+}
+
+.pixel-tab.disabled::after {
+  content: '🔒';
+  font-size: 8px;
+  margin-left: 4px;
+}
+
+/* ========================================
+   上传区域
+   ======================================== */
+.pixel-upload {
+  border: 4px dashed #000000;
+  background: #98fb98; /* Light GameBoy Green */
+  box-shadow: inset 4px 4px 0 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.pixel-upload:hover {
+  border-color: #000000;
+  background-color: #a8fba8;
+  border-style: dashed;
+  transform: scale(1.01);
+}
+
+.pixel-upload.dragover {
+  border-color: #e64e4e;
+  background-color: #ffe6e6;
+  animation: upload-pulse 0.5s ease-in-out infinite;
+  border-style: solid;
+}
+
+/* 上传区域粒子效果 */
+.pixel-upload.dragover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(circle, #f77622 2px, transparent 2px),
+    radial-gradient(circle, #FFD700 2px, transparent 2px);
+  background-size: 32px 32px, 48px 48px;
+  background-position: 0 0, 16px 16px;
+  animation: sparkle-float 1s linear infinite;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ========================================
+   像素进度条
+   ======================================== */
+.pixel-progress {
+  height: 24px;
+  background: #1a1a2e;
+  border: 4px solid #5B8DBF;
+  box-shadow: inset 2px 2px 0 0 rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.pixel-progress::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 8px,
+    rgba(0, 0, 0, 0.1) 8px,
+    rgba(0, 0, 0, 0.1) 16px
+  );
+}
+
+.pixel-progress-bar {
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    #38b764 0px,
+    #38b764 8px,
+    #257953 8px,
+    #257953 16px
+  );
+  animation: progress-stripes 0.3s linear infinite;
+  position: relative;
+  transition: width 0.3s ease;
+}
+
+.pixel-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: #8BD67A;
+  animation: progress-shine 0.5s ease-in-out infinite;
+}
+
+/* ========================================
+   特效卡片图标盒
+   ======================================== */
+.pixel-icon-box {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(180deg, #38b764 0%, #257953 100%);
+  border: 3px solid;
+  border-color: #ffffff #3d5a80 #3d5a80 #ffffff;
+  box-shadow: 3px 3px 0 0 #3d5a80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.pixel-icon-box:hover {
+  transform: rotate(-5deg) scale(1.1);
+}
+
+/* ========================================
+   步骤指示器
+   ======================================== */
+.pixel-step {
+  position: relative;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f4f8 100%);
+  border: 3px solid #5B8DBF;
+  box-shadow: 3px 3px 0 0 #3d5a80;
+  transition: all 0.2s ease;
+}
+
+.pixel-step:hover {
+  transform: translateY(-4px);
+  box-shadow: 3px 7px 0 0 #3d5a80;
+}
+
+.pixel-step-number {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(180deg, #f77622 0%, #c25918 100%);
+  border: 2px solid;
+  border-color: #ffffff #3d5a80 #3d5a80 #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: white;
+  flex-shrink: 0;
+}
+
+/* 步骤连接线 */
+.pixel-step-connector {
+  position: absolute;
+  top: 50%;
+  right: -20px;
+  width: 20px;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    #5B8DBF 0px,
+    #5B8DBF 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+/* ========================================
+   加载动画
+   ======================================== */
+.pixel-loader {
+  display: flex;
+  gap: 4px;
+}
+
+.pixel-loader-block {
+  width: 16px;
+  height: 16px;
+  animation: loader-bounce 0.6s ease-in-out infinite;
+}
+
+.pixel-loader-block:nth-child(1) {
+  background: #38b764;
+  animation-delay: 0s;
+}
+
+.pixel-loader-block:nth-child(2) {
+  background: #3B7DD8;
+  animation-delay: 0.1s;
+}
+
+.pixel-loader-block:nth-child(3) {
+  background: #f77622;
+  animation-delay: 0.2s;
+}
+
+.pixel-loader-block:nth-child(4) {
+  background: #8b5fbf;
+  animation-delay: 0.3s;
+}
+
+/* ========================================
+   游戏化处理进度
+   ======================================== */
+.pixel-game-progress {
+  position: relative;
+  height: 48px;
+  background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+  border: 4px solid #5B8DBF;
+  overflow: hidden;
+}
+
+.pixel-game-progress-track {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: #2d2d4a;
+}
+
+.pixel-game-progress-fill {
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    #38b764 0px,
+    #38b764 8px,
+    #8BD67A 8px,
+    #8BD67A 16px
+  );
+  animation: progress-stripes 0.3s linear infinite;
+  transition: width 0.3s ease;
+}
+
+/* 奔跑的角色 */
+.pixel-game-runner {
+  position: absolute;
+  bottom: 16px;
+  width: 24px;
+  height: 24px;
+  transition: left 0.3s ease;
+}
+
+/* ========================================
+   能量条/血条样式
+   ======================================== */
+.pixel-health-bar {
+  height: 16px;
+  background: #1a1a2e;
+  border: 2px solid #5B8DBF;
+  position: relative;
+  overflow: hidden;
+}
+
+.pixel-health-fill {
+  height: 100%;
+  background: linear-gradient(180deg, #38b764 0%, #257953 100%);
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.pixel-health-fill::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ========================================
+   成就徽章
+   ======================================== */
+.pixel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: linear-gradient(180deg, #FFD700 0%, #DAA520 100%);
+  border: 2px solid;
+  border-color: #FFF8DC #B8860B #B8860B #FFF8DC;
+  font-size: 8px;
+  color: #5a4a00;
+  animation: badge-shine 2s ease-in-out infinite;
+}
+
+/* ========================================
+   水印标记样式
+   ======================================== */
+.watermark-indicator {
+  position: absolute;
+  border: 2px dashed #f77622;
+  background: rgba(247, 118, 34, 0.1);
+  animation: indicator-pulse 1s ease-in-out infinite;
+}

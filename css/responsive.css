@@ -1,0 +1,86 @@
+/**
+ * LSJ Watermark Remover - Responsive Styles
+ * 响应式样式：媒体查询和触摸设备适配
+ */
+
+/* ========================================
+   平板设备 (max-width: 768px)
+   ======================================== */
+@media (max-width: 768px) {
+  /* 地面装饰 */
+  .pixel-ground {
+    height: 48px;
+  }
+
+  .pixel-grass {
+    height: 40px;
+  }
+
+  /* 步骤连接线隐藏 */
+  .pixel-step-connector {
+    display: none;
+  }
+
+  /* 按钮触摸友好 */
+  .pixel-btn {
+    min-height: 44px;
+  }
+
+  /* 面板阴影调整 */
+  .pixel-panel {
+    box-shadow: 4px 4px 0 0 #3d5a80;
+  }
+
+  /* 云朵缩小 */
+  .pixel-cloud {
+    transform: scale(0.7);
+  }
+}
+
+/* ========================================
+   Tab 组件响应式调整
+   ======================================== */
+@media (max-width: 768px) {
+  .pixel-tab:hover:not(.disabled) {
+    padding-bottom: 8px !important;
+  }
+
+  .pixel-tab.active {
+    padding-bottom: 10px !important;
+  }
+}
+
+/* ========================================
+   手机设备 (max-width: 480px)
+   ======================================== */
+@media (max-width: 480px) {
+  /* 图标盒缩小 */
+  .pixel-icon-box {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* 步骤数字缩小 */
+  .pixel-step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+}
+
+/* ========================================
+   触摸设备适配
+   ======================================== */
+@media (hover: none) {
+  /* 按钮触摸反馈 */
+  .pixel-btn:active {
+    transform: translate(2px, 2px) scale(0.98);
+    box-shadow: 2px 2px 0 0 #3d5a80;
+  }
+
+  /* 上传区域触摸反馈 */
+  .pixel-upload:active {
+    border-color: #38b764;
+    background-color: #e0f5e8;
+  }
+}

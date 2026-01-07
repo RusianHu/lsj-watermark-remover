@@ -1,0 +1,34 @@
+/**
+ * LSJ Watermark Remover - Main Stylesheet
+ * 主入口样式文件：导入所有模块化样式
+ * 
+ * 文件结构：
+ * - base.css       基础样式（渲染、字体、滚动条、背景）
+ * - components.css 组件样式（按钮、面板、Tab、进度条等）
+ * - decorations.css 装饰样式（云朵、地面、砖块、金币等）
+ * - animations.css 动画样式（所有 @keyframes）
+ * - responsive.css 响应式样式（媒体查询、触摸适配）
+ * 
+ * 设计风格：复古横版像素游戏
+ * 配色方案：天空蓝渐变 + 绿色主色 + 红色强调色
+ * 
+ * 注意：加载顺序很重要
+ * 1. 基础样式优先
+ * 2. 动画定义在组件之前（组件引用动画）
+ * 3. 响应式覆盖最后加载
+ */
+
+/* 基础样式 */
+@import url('./base.css');
+
+/* 动画定义 (需在组件之前，因为组件引用动画) */
+@import url('./animations.css');
+
+/* 组件样式 */
+@import url('./components.css');
+
+/* 装饰元素 */
+@import url('./decorations.css');
+
+/* 响应式适配 (最后加载以覆盖) */
+@import url('./responsive.css');

@@ -1,0 +1,298 @@
+/**
+ * LSJ Watermark Remover - Animation Styles
+ * 动画样式：所有 @keyframes 动画和过渡效果
+ * 
+ * 使用 steps() 时间函数模拟帧动画
+ */
+
+/* ========================================
+   进度条动画
+   ======================================== */
+@keyframes progress-stripes {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 16px 0;
+  }
+}
+
+@keyframes progress-shine {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ========================================
+   上传区域动画
+   ======================================== */
+@keyframes upload-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.01);
+  }
+}
+
+@keyframes sparkle-float {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-32px);
+  }
+}
+
+/* ========================================
+   草地动画
+   ======================================== */
+@keyframes grass-wave {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-24px);
+  }
+}
+
+/* ========================================
+   问号砖块动画
+   ======================================== */
+@keyframes block-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes block-hit {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   金币动画
+   ======================================== */
+@keyframes coin-spin {
+  0%, 100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(0.2);
+  }
+}
+
+@keyframes coin-float {
+  0%, 100% {
+    transform: translateY(0) scaleX(1);
+  }
+  25% {
+    transform: translateY(-4px) scaleX(0.5);
+  }
+  50% {
+    transform: translateY(0) scaleX(0.2);
+  }
+  75% {
+    transform: translateY(-4px) scaleX(0.5);
+  }
+}
+
+/* ========================================
+   星星动画
+   ======================================== */
+@keyframes star-twinkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+}
+
+/* ========================================
+   角色奔跑动画
+   ======================================== */
+@keyframes runner-move {
+  0% {
+    left: -50px;
+  }
+  100% {
+    left: calc(100% + 50px);
+  }
+}
+
+/* ========================================
+   弹跳动画
+   ======================================== */
+@keyframes bounce-pixel {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.pixel-bounce {
+  animation: bounce-pixel 1s ease-in-out infinite;
+}
+
+.pixel-bounce-slow {
+  animation: bounce-pixel 2s ease-in-out infinite;
+}
+
+/* ========================================
+   摇摆动画
+   ======================================== */
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+.pixel-wiggle {
+  animation: wiggle 0.5s ease-in-out infinite;
+}
+
+/* ========================================
+   成功/失败状态动画
+   ======================================== */
+.status-success {
+  animation: success-pop 0.5s ease;
+}
+
+@keyframes success-pop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.status-fail {
+  animation: fail-shake 0.5s ease;
+}
+
+@keyframes fail-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20%, 60% {
+    transform: translateX(-8px);
+  }
+  40%, 80% {
+    transform: translateX(8px);
+  }
+}
+
+/* ========================================
+   加载器动画
+   ======================================== */
+@keyframes loader-bounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.2);
+  }
+}
+
+/* ========================================
+   飘落动画
+   ======================================== */
+@keyframes float-down {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ========================================
+   徽章闪光动画
+   ======================================== */
+@keyframes badge-shine {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 8px 4px rgba(255, 215, 0, 0.4);
+  }
+}
+
+/* ========================================
+   水印指示器脉冲动画
+   ======================================== */
+@keyframes indicator-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ========================================
+   元素掉落动画
+   ======================================== */
+@keyframes element-drop {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(20deg);
+    opacity: 0;
+  }
+}
+
+/* ========================================
+   打字机效果
+   ======================================== */
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typewriter 2s steps(20) forwards;
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
