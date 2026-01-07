@@ -14,16 +14,16 @@ export const WATERMARK_TYPE = {
     UNKNOWN: 'unknown'
 };
 
-// PNG assets paths (absolute paths from root)
-const GEMINI_BG_48_PATH = '/assets/bg_48.png';
-const GEMINI_BG_96_PATH = '/assets/bg_96.png';
+// PNG assets paths (relative paths for subdirectory deployment)
+const GEMINI_BG_48_PATH = './assets/bg_48.png';
+const GEMINI_BG_96_PATH = './assets/bg_96.png';
 
 // Doubao watermark templates for different aspect ratios
 // Each template was extracted from actual watermarked images
 const DOUBAO_BG_PATHS = {
-    '1x1': '/assets/doubao_bg_1x1.png',  // For square images (ratio ~1.0)
-    '2x3': '/assets/doubao_bg_2x3.png',  // For portrait images (ratio < 0.8)
-    '3x2': '/assets/doubao_bg_3x2.png'   // For landscape images (ratio > 1.2)
+    '1x1': './assets/doubao_bg_1x1.png',  // For square images (ratio ~1.0)
+    '2x3': './assets/doubao_bg_2x3.png',  // For portrait images (ratio < 0.8)
+    '3x2': './assets/doubao_bg_3x2.png'   // For landscape images (ratio > 1.2)
 };
 
 // Doubao watermark reference configurations for each aspect ratio
