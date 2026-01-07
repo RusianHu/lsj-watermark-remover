@@ -233,7 +233,7 @@
     }
 
     .pixel-tab:hover:not(.disabled) {
-      transform: translateY(-2px);
+      padding-bottom: 10px !important;
     }
 
     .pixel-tab.active {
@@ -241,7 +241,16 @@
       color: #000000;
       border-color: #000000;
       z-index: 10;
-      transform: translateY(-4px);
+      padding-bottom: 12px !important;
+    }
+
+    @media (max-width: 768px) {
+      .pixel-tab:hover:not(.disabled) {
+        padding-bottom: 8px !important;
+      }
+      .pixel-tab.active {
+        padding-bottom: 10px !important;
+      }
     }
 
     .pixel-tab.disabled {
@@ -1087,8 +1096,8 @@
       </div>
 
       <!-- AI 模型选项卡 -->
-      <div class="max-w-4xl mx-auto mb-3 md:mb-4">
-      <div class="flex justify-center gap-0 overflow-x-auto pb-1">
+      <div class="max-w-4xl mx-auto -mb-[4px]">
+      <div class="flex justify-center gap-0 overflow-x-auto items-end">
         <button class="pixel-tab active px-3 md:px-4 py-1.5 md:py-2 text-[9px] md:text-[10px] text-pixel-text rounded-t-lg whitespace-nowrap" data-tab="gemini">
           ✦ GEMINI
         </button>
@@ -1102,7 +1111,7 @@
     </div>
 
       <!-- 上传区域 -->
-      <div class="max-w-4xl mx-auto pixel-panel pixel-panel-decorated p-2 md:p-3">
+      <div class="max-w-4xl mx-auto pixel-panel pixel-panel-decorated p-2 md:p-3" style="z-index: 5;">
         <div id="uploadArea" class="pixel-upload group relative flex flex-col items-center justify-center w-full min-h-[180px] md:h-56 cursor-pointer transition-all rounded-sm">
           <div class="flex flex-col items-center justify-center py-4 md:py-6">
             <!-- 像素上传图标 -->
