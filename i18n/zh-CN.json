@@ -7,9 +7,9 @@
   "upload.text": "插入卡带 或 点击选择",
   "upload.hint": "支持 JPG, PNG, WebP 格式",
   "upload.dragHint": "或拖放文件",
-  "step.1": "开始游戏",
+  "step.1": "上传图片 ",
   "step.1.desc": "选择图片文件",
-  "step.2": "升级处理",
+  "step.2": "进行处理",
   "step.2.desc": "正在清除水印",
   "step.3": "获取奖励",
   "step.3.desc": "保存无水印图",
@@ -66,7 +66,7 @@
   "terms.liability.desc": "本工具按「原样」提供。开发者不对因使用本工具而产生的任何数据丢失、图像损坏或法律纠纷承担责任。",
   "terms.agree": "我已阅读并同意条款",
   "tab.gemini": "✦ GEMINI",
-  "tab.qwen": "✦ QWEN",
-  "tab.doubao": "✦ DOUBAO",
+  "tab.qwen": "✦ 千问",
+  "tab.doubao": "✦ 豆包",
   "tab.coming_soon": "即将推出"
 }
