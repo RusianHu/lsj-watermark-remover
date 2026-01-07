@@ -3,7 +3,7 @@
  * Handles image processing queue and watermark removal operations
  */
 
-import { WatermarkEngine } from './core/watermarkEngine.js';
+import { WatermarkEngine, WATERMARK_TYPE } from './core/watermarkEngine.js';
 import { loadImage, checkOriginal, getOriginalStatus, setStatusMessage } from './utils.js';
 import i18n from './i18n.js';
 import * as ui from './ui.js';
@@ -13,6 +13,7 @@ let engine = null;
 let imageQueue = [];
 let processedCount = 0;
 let zoom = null;
+let currentWatermarkType = WATERMARK_TYPE.GEMINI;
 
 /**
  * Initialize the watermark engine
@@ -28,6 +29,26 @@ export async function initEngine() {
  */
 export function setZoom(zoomInstance) {
     zoom = zoomInstance;
+}
+
+/**
+ * Set the current watermark type to process
+ * @param {string} type - Watermark type ('gemini' or 'doubao')
+ */
+export function setWatermarkType(type) {
+    if (engine) {
+        engine.setWatermarkType(type);
+    }
+    currentWatermarkType = type;
+    console.log(`Watermark type set to: ${type}`);
+}
+
+/**
+ * Get the current watermark type
+ * @returns {string} Current watermark type
+ */
+export function getWatermarkType() {
+    return currentWatermarkType;
 }
 
 /**
@@ -114,10 +135,10 @@ export async function processSingle(item) {
         const status = getOriginalStatus({ is_google, is_original });
         setStatusMessage(status, is_google && is_original ? 'success' : 'warn');
 
-        const watermarkInfo = engine.getWatermarkInfo(img.width, img.height);
+        const watermarkInfo = engine.getWatermarkInfo(img.width, img.height, currentWatermarkType);
         ui.updateOriginalPreview(img, watermarkInfo);
 
-        const result = await engine.removeWatermarkFromImage(img);
+        const result = await engine.removeWatermarkFromImage(img, currentWatermarkType);
         const blob = await new Promise(resolve => result.toBlob(resolve, 'image/png'));
         item.processedBlob = blob;
 
@@ -168,7 +189,7 @@ export async function processQueue() {
             ui.updateStatus(item.id, i18n.t('status.processing'));
 
             try {
-                const result = await engine.removeWatermarkFromImage(item.originalImg);
+                const result = await engine.removeWatermarkFromImage(item.originalImg, currentWatermarkType);
                 const blob = await new Promise(resolve => result.toBlob(resolve, 'image/png'));
                 item.processedBlob = blob;
 
@@ -178,7 +199,7 @@ export async function processQueue() {
                 if (resultImg) resultImg.src = item.processedUrl;
 
                 item.status = 'completed';
-                const watermarkInfo = engine.getWatermarkInfo(item.originalImg.width, item.originalImg.height);
+                const watermarkInfo = engine.getWatermarkInfo(item.originalImg.width, item.originalImg.height, currentWatermarkType);
 
                 ui.updateStatus(item.id, `
                     <p>${i18n.t('info.size')}: ${item.originalImg.width}×${item.originalImg.height}</p>

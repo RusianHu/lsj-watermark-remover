@@ -39,6 +39,11 @@ async function init() {
             updateDynamicTexts();
         });
         
+        // Setup tab switching
+        ui.setupTabs((engineType) => {
+            processor.setWatermarkType(engineType);
+        });
+        
         // Setup event listeners
         setupEventListeners();
 

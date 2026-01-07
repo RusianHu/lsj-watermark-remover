@@ -51,17 +51,17 @@ export function initElements() {
     elements.tabButtons = document.querySelectorAll('[data-tab]');
     elements.sceneDecorations = document.getElementById('sceneDecorations');
 
-    // 初始化标签页事件监听
-    initTabs();
+    // 初始化标签页事件监听（将在 setupTabs 中设置回调）
 
     // 初始化增强的拖拽效果
     initEnhancedDragEffects();
 }
 
 /**
- * 初始化 AI 模型选项卡
+ * 设置 AI 模型选项卡，带有切换回调
+ * @param {Function} onTabSwitch - 标签页切换时的回调函数，参数为引擎名称
  */
-function initTabs() {
+export function setupTabs(onTabSwitch) {
     if (!elements.tabButtons) return;
 
     elements.tabButtons.forEach(btn => {
@@ -73,9 +73,14 @@ function initTabs() {
             // 为点击的标签页添加 active 类
             btn.classList.add('active');
 
-            // 切换处理引擎（目前只实现了 Gemini）
+            // 切换处理引擎
             const tabName = btn.getAttribute('data-tab');
             console.log(`Switched to ${tabName} engine`);
+
+            // 调用回调函数
+            if (onTabSwitch) {
+                onTabSwitch(tabName);
+            }
 
             // 添加点击动画效果
             btn.style.transform = 'scale(0.95)';
@@ -366,6 +371,7 @@ export function updateOriginalPreview(img, watermarkInfo) {
     const { originalImage, originalInfo } = elements;
     if (originalImage) originalImage.src = img.src;
     if (originalInfo) {
+        const sizeDisplay = watermarkInfo.sizeDisplay || `${watermarkInfo.size}×${watermarkInfo.size}`;
         originalInfo.innerHTML = `
             <span class="flex items-center gap-1">
                 <svg class="w-2 h-2" viewBox="0 0 8 8" fill="currentColor">
@@ -374,7 +380,7 @@ export function updateOriginalPreview(img, watermarkInfo) {
                 ${i18n.t('info.size')}: ${img.width}×${img.height}
             </span>
             <span class="mx-1 md:mx-2">|</span>
-            <span>${i18n.t('info.watermark')}: ${watermarkInfo.size}×${watermarkInfo.size}</span>
+            <span>${i18n.t('info.watermark')}: ${sizeDisplay}</span>
         `;
     }
 }
