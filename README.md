@@ -37,9 +37,16 @@ graph TD
 
 ## 快速开始
 
-### 在线/本地运行
+### 本地安装
 
-无需安装任何依赖，直接使用现代浏览器打开 `index.html` 即可使用。
+通过 Git 克隆项目到本地：
+
+```bash
+git clone https://github.com/RusianHu/lsj-watermark-remover.git
+cd lsj-watermark-remover
+```
+
+下载完成后，直接使用现代浏览器打开 `index.html` 即可使用。
 
 ### 部署托管
 
