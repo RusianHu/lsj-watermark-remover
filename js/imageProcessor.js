@@ -131,9 +131,9 @@ export async function processSingle(item) {
         const img = await loadImage(item.file);
         item.originalImg = img;
 
-        const { is_google, is_original } = await checkOriginal(item.file);
-        const status = getOriginalStatus({ is_google, is_original });
-        setStatusMessage(status, is_google && is_original ? 'success' : 'warn');
+        const { is_valid_source, is_original, watermarkType } = await checkOriginal(item.file, currentWatermarkType);
+        const status = getOriginalStatus({ is_valid_source, is_original, watermarkType });
+        setStatusMessage(status, is_valid_source && is_original ? 'success' : 'warn');
 
         const watermarkInfo = engine.getWatermarkInfo(img.width, img.height, currentWatermarkType);
         ui.updateOriginalPreview(img, watermarkInfo);
@@ -213,9 +213,9 @@ export async function processQueue() {
                 ui.updateProgress(processedCount, imageQueue.length);
 
                 // Check if original asynchronously
-                checkOriginal(item.file).then(({ is_google, is_original }) => {
-                    if (!is_google || !is_original) {
-                        const status = getOriginalStatus({ is_google, is_original });
+                checkOriginal(item.file, currentWatermarkType).then(({ is_valid_source, is_original, watermarkType }) => {
+                    if (!is_valid_source || !is_original) {
+                        const status = getOriginalStatus({ is_valid_source, is_original, watermarkType });
                         ui.addStatusWarning(item.id, status);
                     }
                 }).catch(() => {});

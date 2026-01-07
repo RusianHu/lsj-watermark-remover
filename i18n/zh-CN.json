@@ -48,6 +48,8 @@
   "info.status": "状态",
   "info.removed": "水印已移除",
   "original.not_gemini": "⚠ 此图片可能非 Gemini 生成，无法无损处理",
+  "original.not_doubao": "⚠ 此图片可能非豆包生成，无法无损处理",
+  "original.not_valid_source": "⚠ 此图片可能非目标 AI 生成，无法无损处理",
   "original.not_original": "⚠ 此图片非原始尺寸，可能无法无损处理",
   "original.pass": "✓ 可进行无损去水印处理",
   "terms.title": "使用条款",

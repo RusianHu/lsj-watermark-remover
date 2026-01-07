@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>LSJ Watermark Remover</title>
   <meta name="description" content="Free AI watermark remover tool to remove watermarks from Gemini, Doubao, Qwen and other AI images. — safe, private, and 100% browser-based.">
   <meta name="keywords" content="AI watermark remover, Gemini watermark remover, Doubao watermark remover, Qwen watermark remover, remove AI watermark, Google AI watermark remover, watermark cleaner tool, free AI watermark remover" />
@@ -72,27 +72,28 @@
       </div>
 
       <!-- 导航区域 -->
-      <nav class="flex gap-3 md:gap-4 items-center">
+      <nav class="flex gap-2 md:gap-4 items-center">
         <!-- Principle Button -->
         <a href="https://allenkuo.medium.com/removing-gemini-ai-watermarks-a-deep-dive-into-reverse-alpha-blending-bbbd83af2a3f"
            target="_blank"
-           class="hidden md:inline-flex pixel-btn bg-[#3B7DD8] text-white hover:bg-[#4a8eff] px-3 py-1.5 text-[10px] items-center gap-2"
-           data-i18n="nav.principle">
-          <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
+           class="inline-flex pixel-btn bg-[#3B7DD8] text-white hover:bg-[#4a8eff] p-2 md:px-3 md:py-1.5 text-[10px] items-center gap-2 min-w-[44px] min-h-[44px] justify-center"
+           title="How it works">
+          <svg class="w-4 h-4 md:w-3 md:h-3" viewBox="0 0 16 16" fill="currentColor">
             <rect x="2" y="2" width="12" height="2"/>
             <rect x="2" y="6" width="8" height="2"/>
             <rect x="2" y="10" width="10" height="2"/>
             <rect x="12" y="8" width="2" height="6"/>
             <rect x="10" y="12" width="2" height="2"/>
           </svg>
-          HOW IT WORKS
+          <span class="hidden md:inline" data-i18n="nav.principle">HOW IT WORKS</span>
         </a>
 
         <!-- GitHub Button -->
         <a href="https://github.com/RusianHu/lsj-watermark-remover"
            target="_blank"
-           class="hidden md:inline-flex pixel-btn bg-[#333] text-white hover:bg-[#444] px-3 py-1.5 text-[10px] items-center gap-2">
-          <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
+           class="inline-flex pixel-btn bg-[#333] text-white hover:bg-[#444] p-2 md:px-3 md:py-1.5 text-[10px] items-center gap-2 min-w-[44px] min-h-[44px] justify-center"
+           title="GitHub">
+          <svg class="w-4 h-4 md:w-3 md:h-3" viewBox="0 0 16 16" fill="currentColor">
             <rect x="2" y="5" width="2" height="2"/>
             <rect x="12" y="5" width="2" height="2"/>
             <rect x="3" y="4" width="2" height="1"/>
@@ -105,11 +106,11 @@
             <rect x="9" y="8" width="1" height="2"/>
             <rect x="7" y="10" width="2" height="1"/>
           </svg>
-          GITHUB
+          <span class="hidden md:inline">GITHUB</span>
         </a>
 
         <!-- Language Switch -->
-        <button id="langSwitch" class="pixel-btn pixel-btn-secondary px-3 py-1.5 text-[10px] min-w-[40px]">
+        <button id="langSwitch" class="pixel-btn pixel-btn-secondary px-3 py-1.5 text-[10px] min-w-[44px] min-h-[44px]">
           EN
         </button>
       </nav>
@@ -149,13 +150,13 @@
       <!-- AI 模型选项卡 -->
       <div class="max-w-4xl mx-auto -mb-[4px]">
       <div class="flex justify-center gap-0 overflow-x-auto items-end">
-        <button class="pixel-tab active px-3 md:px-4 py-1.5 md:py-2 text-xs text-pixel-text rounded-t-lg whitespace-nowrap" data-tab="gemini" data-i18n="tab.gemini">
+        <button class="pixel-tab active px-3 md:px-4 py-2.5 md:py-2 text-xs text-pixel-text rounded-t-lg whitespace-nowrap" data-tab="gemini" data-i18n="tab.gemini">
           ✦ GEMINI
         </button>
-        <button class="pixel-tab px-3 md:px-4 py-1.5 md:py-2 text-xs text-pixel-text rounded-t-lg whitespace-nowrap" data-tab="doubao" data-i18n="tab.doubao">
+        <button class="pixel-tab px-3 md:px-4 py-2.5 md:py-2 text-xs text-pixel-text rounded-t-lg whitespace-nowrap" data-tab="doubao" data-i18n="tab.doubao">
           ✦ DOUBAO
         </button>
-        <button class="pixel-tab disabled px-3 md:px-4 py-1.5 md:py-2 text-xs text-pixel-text-dim rounded-t-lg whitespace-nowrap" data-tab="qwen" disabled data-i18n="tab.qwen">
+        <button class="pixel-tab disabled px-3 md:px-4 py-2.5 md:py-2 text-xs text-pixel-text-dim rounded-t-lg whitespace-nowrap" data-tab="qwen" disabled data-i18n="tab.qwen">
           ✦ QWEN
         </button>
       </div>

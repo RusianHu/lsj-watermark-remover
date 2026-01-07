@@ -83,4 +83,9 @@
     border-color: #38b764;
     background-color: #e0f5e8;
   }
+
+  /* 隐藏触摸设备上的拖拽提示 */
+  [data-i18n="upload.dragHint"] {
+    display: none;
+  }
 }

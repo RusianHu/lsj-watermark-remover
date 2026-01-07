@@ -46,13 +46,15 @@
   transition: left 0.3s ease;
 }
 
-.pixel-btn:hover::before {
-  left: 100%;
-}
+@media (hover: hover) {
+  .pixel-btn:hover::before {
+    left: 100%;
+  }
 
-.pixel-btn:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 0 #000000;
+  .pixel-btn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 0 #000000;
+  }
 }
 
 .pixel-btn:active {
@@ -85,8 +87,10 @@
   color: #f8f8f8;
 }
 
-.pixel-btn-primary:hover {
-  background: #00c000;
+@media (hover: hover) {
+  .pixel-btn-primary:hover {
+    background: #00c000;
+  }
 }
 
 /* 次要按钮 - 红色 */
@@ -95,8 +99,10 @@
   color: white;
 }
 
-.pixel-btn-secondary:hover {
-  background: #ff5f5f;
+@media (hover: hover) {
+  .pixel-btn-secondary:hover {
+    background: #ff5f5f;
+  }
 }
 
 /* 强调按钮 - 金色 */
@@ -166,8 +172,10 @@
   border-radius: 4px 4px 0 0;
 }
 
-.pixel-tab:hover:not(.disabled) {
-  padding-bottom: 10px !important;
+@media (hover: hover) {
+  .pixel-tab:hover:not(.disabled) {
+    padding-bottom: 10px !important;
+  }
 }
 
 .pixel-tab.active {
@@ -202,11 +210,13 @@
   overflow: hidden;
 }
 
-.pixel-upload:hover {
-  border-color: #000000;
-  background-color: #a8fba8;
-  border-style: dashed;
-  transform: scale(1.01);
+@media (hover: hover) {
+  .pixel-upload:hover {
+    border-color: #000000;
+    background-color: #a8fba8;
+    border-style: dashed;
+    transform: scale(1.01);
+  }
 }
 
 .pixel-upload.dragover {
@@ -300,8 +310,10 @@
   transition: transform 0.2s ease;
 }
 
-.pixel-icon-box:hover {
-  transform: rotate(-5deg) scale(1.1);
+@media (hover: hover) {
+  .pixel-icon-box:hover {
+    transform: rotate(-5deg) scale(1.1);
+  }
 }
 
 /* ========================================
