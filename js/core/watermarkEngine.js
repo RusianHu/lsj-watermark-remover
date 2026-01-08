@@ -1,7 +1,7 @@
 /**
  * Watermark engine main module
  * Coordinate watermark detection, alpha map calculation, and removal operations
- * Supports multiple watermark types: Gemini, Doubao
+ * Supports multiple watermark types: Gemini, Doubao, Qwen
  */
 
 import { calculateAlphaMap } from './alphaMap.js';
@@ -11,6 +11,7 @@ import { removeWatermark } from './blendModes.js';
 export const WATERMARK_TYPE = {
     GEMINI: 'gemini',
     DOUBAO: 'doubao',
+    QWEN: 'qwen',
     UNKNOWN: 'unknown'
 };
 
@@ -25,6 +26,10 @@ const DOUBAO_BG_PATHS = {
     '2x3': './assets/doubao_bg_2x3.png',  // For portrait images (ratio < 0.8)
     '3x2': './assets/doubao_bg_3x2.png'   // For landscape images (ratio > 1.2)
 };
+
+// Qwen watermark template path
+// Qwen uses "千问AI生成" watermark in bottom-right corner
+const QWEN_BG_PATH = './assets/qwen_bg_1x1.png';
 
 // Doubao watermark reference configurations for each aspect ratio
 // All measurements are from actual Doubao-generated images
@@ -53,6 +58,18 @@ const DOUBAO_CONFIGS = {
         marginRight: 53,
         marginBottom: 53
     }
+};
+
+// Qwen watermark reference configuration
+// Measured from actual Qwen-generated 1328x1328 image
+// Qwen watermark appears to scale proportionally with short edge
+const QWEN_CONFIG = {
+    refWidth: 1328,
+    refHeight: 1328,
+    wmWidth: 234,
+    wmHeight: 46,
+    marginRight: 28,
+    marginBottom: 30
 };
 
 // Gemini watermark scaling parameters
@@ -188,6 +205,33 @@ export function detectWatermarkConfig(imageWidth, imageHeight, watermarkType = '
         };
     }
     
+    if (watermarkType === WATERMARK_TYPE.QWEN) {
+        // Qwen watermark: "千问AI生成" text in bottom-right corner
+        // Scales proportionally based on the shorter edge
+        const config = QWEN_CONFIG;
+        
+        // Calculate scale factor based on the shorter edge ratio
+        const refShortEdge = Math.min(config.refWidth, config.refHeight);
+        const imgShortEdge = Math.min(imageWidth, imageHeight);
+        const scale = imgShortEdge / refShortEdge;
+        
+        // Scale watermark dimensions and margins
+        const wmWidth = Math.round(config.wmWidth * scale);
+        const wmHeight = Math.round(config.wmHeight * scale);
+        const marginRight = Math.round(config.marginRight * scale);
+        const marginBottom = Math.round(config.marginBottom * scale);
+        
+        return {
+            type: WATERMARK_TYPE.QWEN,
+            width: wmWidth,
+            height: wmHeight,
+            marginRight: marginRight,
+            marginBottom: marginBottom,
+            // Store reference info for alpha map retrieval
+            refConfig: config
+        };
+    }
+    
     // Default: Gemini watermark with size-based scaling
     return calculateGeminiConfig(imageWidth, imageHeight);
 }
@@ -227,6 +271,7 @@ export class WatermarkEngine {
         const doubao1x1 = new Image();
         const doubao2x3 = new Image();
         const doubao3x2 = new Image();
+        const qwen = new Image();
 
         await Promise.all([
             new Promise((resolve, reject) => {
@@ -253,6 +298,11 @@ export class WatermarkEngine {
                 doubao3x2.onload = resolve;
                 doubao3x2.onerror = reject;
                 doubao3x2.src = DOUBAO_BG_PATHS['3x2'];
+            }),
+            new Promise((resolve, reject) => {
+                qwen.onload = resolve;
+                qwen.onerror = reject;
+                qwen.src = QWEN_BG_PATH;
             })
         ]);
 
@@ -263,7 +313,8 @@ export class WatermarkEngine {
                 '1x1': doubao1x1,
                 '2x3': doubao2x3,
                 '3x2': doubao3x2
-            }
+            },
+            qwen: qwen
         });
     }
 
@@ -306,6 +357,11 @@ export class WatermarkEngine {
             // Get the appropriate Doubao template based on aspect category
             const category = aspectCategory || '1x1';
             bgImage = this.bgCaptures.doubao[category];
+            srcWidth = bgImage.width;
+            srcHeight = bgImage.height;
+        } else if (type === WATERMARK_TYPE.QWEN) {
+            // Get Qwen template
+            bgImage = this.bgCaptures.qwen;
             srcWidth = bgImage.width;
             srcHeight = bgImage.height;
         } else {

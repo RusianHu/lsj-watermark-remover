@@ -49,6 +49,7 @@
   "info.removed": "REMOVED",
   "original.not_gemini": "⚠ NOT GEMINI IMAGE - LOSSLESS N/A",
   "original.not_doubao": "⚠ NOT DOUBAO IMAGE - LOSSLESS N/A",
+  "original.not_qwen": "⚠ NOT QWEN IMAGE - LOSSLESS N/A",
   "original.not_valid_source": "⚠ NOT VALID AI SOURCE - LOSSLESS N/A",
   "original.not_original": "⚠ NOT ORIGINAL SIZE - LOSSLESS N/A",
   "original.pass": "✓ LOSSLESS REMOVAL READY",

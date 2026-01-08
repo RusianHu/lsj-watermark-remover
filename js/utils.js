@@ -11,6 +11,7 @@ import i18n from './i18n.js';
 const WATERMARK_TYPE = {
     GEMINI: 'gemini',
     DOUBAO: 'doubao',
+    QWEN: 'qwen',
     UNKNOWN: 'unknown'
 };
 
@@ -56,6 +57,11 @@ export async function checkOriginal(file, watermarkType = WATERMARK_TYPE.GEMINI)
                 // This allows Doubao processing without false warnings
                 is_valid_source = true;
                 break;
+            case WATERMARK_TYPE.QWEN:
+                // Qwen (千问) images: no reliable EXIF marker to check
+                // Assume valid for all Qwen processing
+                is_valid_source = true;
+                break;
             default:
                 is_valid_source = false;
         }
@@ -66,9 +72,9 @@ export async function checkOriginal(file, watermarkType = WATERMARK_TYPE.GEMINI)
             watermarkType
         };
     } catch {
-        // For Doubao, we still consider it valid even if EXIF parsing fails
+        // For Doubao and Qwen, we still consider it valid even if EXIF parsing fails
         return {
-            is_valid_source: watermarkType === WATERMARK_TYPE.DOUBAO,
+            is_valid_source: watermarkType === WATERMARK_TYPE.DOUBAO || watermarkType === WATERMARK_TYPE.QWEN,
             is_original: false,
             watermarkType
         };

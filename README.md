@@ -4,7 +4,7 @@
 
 > 纯浏览器端 AI 图像去水印工具，基于反向 Alpha 混合算法。
 
-本工具专注于去除 Gemini、Doubao 等 AI 生成图像中的嵌入式水印。所有处理流程完全在本地浏览器中执行，利用 Canvas API 进行像素级运算，确保图像数据绝不上传至服务器，保障用户隐私安全。
+本工具专注于去除 Gemini、Doubao（豆包）、Qwen (千问) 等 AI 生成图像中的嵌入式水印。所有处理流程完全在本地浏览器中执行，利用 Canvas API 进行像素级运算，确保图像数据绝不上传至服务器，保障用户隐私安全。
 
 ## 工作原理
 
@@ -14,9 +14,11 @@ graph TD
     
     Detect -- Gemini --> ConfigG[匹配尺寸规格<br/>48px / 96px]
     Detect -- Doubao --> ConfigD[计算纵横比<br/>1:1 / 2:3 / 3:2]
+    Detect -- Qwen --> ConfigQ[自适应比例缩放]
     
     ConfigG --> LoadRef[加载基准背景底图]
     ConfigD --> LoadRef
+    ConfigQ --> LoadRef
     
     LoadRef --> AlphaCalc[计算 Alpha 通道映射]
     Input --> Blend[反向混合运算]
@@ -31,7 +33,7 @@ graph TD
 *   **本地运算**: 纯前端实现，无需后端服务器支持，零网络延迟。
 *   **隐私安全**: 图片数据仅驻留于用户设备内存，无数据泄露风险。
 *   **算法原理**: 采用反向 Alpha 混合 (Reverse Alpha Blending) 技术，通过预置的背景底图计算水印 Alpha 通道，精确还原被覆盖的原始像素。
-*   **多模型适配**: 自动识别 Gemini (48px/96px) 及 Doubao (1:1/2:3/3:2) 等不同类型和比例的水印配置。
+*   **多模型适配**: 自动识别 Gemini (48px/96px)、Doubao (1:1/2:3/3:2) 及 Qwen (千问) 等不同类型和比例的水印配置。
 *   **批量处理**: 支持多图并发处理与打包下载。
 
 
@@ -48,7 +50,7 @@ cd lsj-watermark-remover
 
 下载完成后，直接使用现代浏览器打开 `index.html` 即可使用。
 
-### 部署托管
+### 部署启动
 
 如需在本地网络中共享，可使用任意静态文件服务器：
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>豆包水印模板校准工具 (带实时去水印对比)</title>
+    <title>水印模板校准工具 (支持多种 AI 水印)</title>
     <style>
         :root {
             --bg-primary: #0a0a1a;
@@ -140,6 +140,22 @@
         }
 
         input[type="number"]:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        select:focus {
             outline: none;
             border-color: var(--accent);
         }
@@ -529,16 +545,58 @@
             text-align: center;
             margin-top: 5px;
         }
+
+        /* 水印类型指示器 */
+        .watermark-type-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        .watermark-type-indicator.gemini {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .watermark-type-indicator.doubao {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .watermark-type-indicator.qwen {
+            background: rgba(168, 85, 247, 0.2);
+            color: #a855f7;
+        }
     </style>
 </head>
 <body>
-    <h1>🎯 豆包水印模板校准工具</h1>
-    <p class="subtitle">从高质量纯黑水印图中精确裁剪水印区域，实时对比去水印效果</p>
+    <h1>🎯 AI 水印模板校准工具</h1>
+    <p class="subtitle">从纯黑水印图中精确裁剪水印区域，支持 Gemini / 豆包 / 千问 等多种 AI 水印</p>
 
     <div class="container">
         <!-- 左侧控制面板 -->
         <div class="controls-panel">
             <div class="panel">
+                <h2>🤖 水印类型选择</h2>
+                <div class="control-group">
+                    <select id="watermarkType" onchange="onWatermarkTypeChange()">
+                        <option value="qwen">千问 (Qwen) - 1328×1328</option>
+                        <option value="doubao_1x1">豆包 (Doubao) - 1:1 正方形</option>
+                        <option value="doubao_2x3">豆包 (Doubao) - 2:3 竖版</option>
+                        <option value="doubao_3x2">豆包 (Doubao) - 3:2 横版</option>
+                        <option value="gemini">Gemini - 通用</option>
+                    </select>
+                </div>
+                <div id="currentTypeIndicator" class="watermark-type-indicator qwen">
+                    <span>📍 当前配置: 千问 1x1</span>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-top: 15px;">
                 <h2>📁 模板图片 (纯黑背景)</h2>
                 <div class="control-group">
                     <div class="btn-group">
@@ -574,23 +632,23 @@
                 <div id="cornerMode">
                     <div class="control-row">
                         <label>宽度:</label>
-                        <input type="range" id="cropWidth" min="50" max="500" value="272">
-                        <span class="value-display" id="cropWidthVal">272</span>
+                        <input type="range" id="cropWidth" min="50" max="500" value="240">
+                        <span class="value-display" id="cropWidthVal">240</span>
                     </div>
                     <div class="control-row">
                         <label>高度:</label>
-                        <input type="range" id="cropHeight" min="30" max="300" value="100">
-                        <span class="value-display" id="cropHeightVal">100</span>
+                        <input type="range" id="cropHeight" min="30" max="300" value="54">
+                        <span class="value-display" id="cropHeightVal">54</span>
                     </div>
                     <div class="control-row">
                         <label>右边距:</label>
-                        <input type="range" id="marginRight" min="0" max="200" value="0">
-                        <span class="value-display" id="marginRightVal">0</span>
+                        <input type="range" id="marginRight" min="0" max="200" value="25">
+                        <span class="value-display" id="marginRightVal">25</span>
                     </div>
                     <div class="control-row">
                         <label>下边距:</label>
-                        <input type="range" id="marginBottom" min="0" max="200" value="0">
-                        <span class="value-display" id="marginBottomVal">0</span>
+                        <input type="range" id="marginBottom" min="0" max="200" value="25">
+                        <span class="value-display" id="marginBottomVal">25</span>
                     </div>
                 </div>
 
@@ -605,11 +663,11 @@
                     </div>
                     <div class="control-row">
                         <label>宽度:</label>
-                        <input type="number" id="cropWidthManual" value="272" min="10">
+                        <input type="number" id="cropWidthManual" value="240" min="10">
                     </div>
                     <div class="control-row">
                         <label>高度:</label>
-                        <input type="number" id="cropHeightManual" value="100" min="10">
+                        <input type="number" id="cropHeightManual" value="54" min="10">
                     </div>
                 </div>
 
@@ -681,7 +739,7 @@
                         <div class="zoom-hint">点击放大</div>
                     </div>
                     <div class="preview-box">
-                        <h3>当前 2x3 模板对比</h3>
+                        <h3>当前模板对比</h3>
                         <div class="preview-canvas-wrapper">
                             <canvas id="templatePreview" class="zoomable" onclick="showModal('templatePreview')"></canvas>
                         </div>
@@ -694,7 +752,7 @@
             <div class="comparison-section">
                 <h2 style="color: var(--accent); margin-bottom: 5px;">🔬 实时去水印对比</h2>
                 <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">
-                    上传一张带豆包水印的测试图片，使用当前裁剪配置进行实时去水印效果预览
+                    上传一张带水印的测试图片，使用当前裁剪配置进行实时去水印效果预览
                 </p>
 
                 <div class="btn-group" style="margin-bottom: 15px;">
@@ -754,30 +812,87 @@
     </div>
 
     <script>
-        // 当前项目配置 (与 watermarkEngine.js 中的 DOUBAO_CONFIGS['2x3'] 保持同步)
-        const PROJECT_CONFIG = {
-            refWidth: 1672,
-            refHeight: 2508,
-            wmWidth: 225,
-            wmHeight: 43,
-            marginRight: 50,
-            marginBottom: 50
+        // ========== 水印配置预设 ==========
+        // 从 watermarkEngine.js 同步的配置
+        const WATERMARK_CONFIGS = {
+            qwen: {
+                name: '千问 1x1',
+                templatePath: 'assets/qwen_bg_1x1.png',
+                defaultImagePath: 'assets/qwen1328x1328.png',
+                refWidth: 1328,
+                refHeight: 1328,
+                wmWidth: 234,
+                wmHeight: 46,
+                marginRight: 28,
+                marginBottom: 30,
+                cssClass: 'qwen'
+            },
+            doubao_1x1: {
+                name: '豆包 1x1',
+                templatePath: 'assets/doubao_bg_1x1.png',
+                defaultImagePath: 'assets/doubao1x1.png',
+                refWidth: 2048,
+                refHeight: 2048,
+                wmWidth: 282,
+                wmHeight: 123,
+                marginRight: 57,
+                marginBottom: 54,
+                cssClass: 'doubao'
+            },
+            doubao_2x3: {
+                name: '豆包 2x3',
+                templatePath: 'assets/doubao_bg_2x3.png',
+                defaultImagePath: 'assets/doubao1672x2508.png',
+                refWidth: 1672,
+                refHeight: 2508,
+                wmWidth: 225,
+                wmHeight: 43,
+                marginRight: 50,
+                marginBottom: 50,
+                cssClass: 'doubao'
+            },
+            doubao_3x2: {
+                name: '豆包 3x2',
+                templatePath: 'assets/doubao_bg_3x2.png',
+                defaultImagePath: 'assets/doubao3x2.png',
+                refWidth: 2508,
+                refHeight: 1672,
+                wmWidth: 296,
+                wmHeight: 71,
+                marginRight: 53,
+                marginBottom: 53,
+                cssClass: 'doubao'
+            },
+            gemini: {
+                name: 'Gemini',
+                templatePath: 'assets/bg_96.png',
+                defaultImagePath: 'assets/Gemini2528x1696.png',
+                refWidth: 2048,
+                refHeight: 2048,
+                wmWidth: 96,
+                wmHeight: 96,
+                marginRight: 64,
+                marginBottom: 64,
+                cssClass: 'gemini'
+            }
         };
 
         // State
-        let sourceImage = null;  // 模板图片（纯黑背景）
-        let testImage = null;    // 测试图片（带水印）
+        let currentWatermarkType = 'qwen';
+        let sourceImage = null;
+        let testImage = null;
         let currentZoom = 1;
         let currentMode = 'corner';
         let boxColor = '#ef4444';
         let isDragging = false;
         let dragStart = { x: 0, y: 0 };
-        // 从项目配置加载默认值
+        
+        // 从当前配置初始化裁剪区域
         let cropRect = {
-            x: PROJECT_CONFIG.refWidth - PROJECT_CONFIG.marginRight - PROJECT_CONFIG.wmWidth,
-            y: PROJECT_CONFIG.refHeight - PROJECT_CONFIG.marginBottom - PROJECT_CONFIG.wmHeight,
-            width: PROJECT_CONFIG.wmWidth,
-            height: PROJECT_CONFIG.wmHeight
+            x: 0,
+            y: 0,
+            width: 240,
+            height: 54
         };
 
         // DOM elements
@@ -794,38 +909,63 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            // 设置滑块和输入框的默认值
-            document.getElementById('cropWidth').value = PROJECT_CONFIG.wmWidth;
-            document.getElementById('cropWidthVal').textContent = PROJECT_CONFIG.wmWidth;
-            document.getElementById('cropHeight').value = PROJECT_CONFIG.wmHeight;
-            document.getElementById('cropHeightVal').textContent = PROJECT_CONFIG.wmHeight;
-            document.getElementById('marginRight').value = PROJECT_CONFIG.marginRight;
-            document.getElementById('marginRightVal').textContent = PROJECT_CONFIG.marginRight;
-            document.getElementById('marginBottom').value = PROJECT_CONFIG.marginBottom;
-            document.getElementById('marginBottomVal').textContent = PROJECT_CONFIG.marginBottom;
-            document.getElementById('cropWidthManual').value = PROJECT_CONFIG.wmWidth;
-            document.getElementById('cropHeightManual').value = PROJECT_CONFIG.wmHeight;
-            
+            loadConfigFromType(currentWatermarkType);
             setupEventListeners();
             loadExistingTemplate();
         });
 
+        function onWatermarkTypeChange() {
+            currentWatermarkType = document.getElementById('watermarkType').value;
+            loadConfigFromType(currentWatermarkType);
+            loadExistingTemplate();
+            
+            // 如果已有源图像，需要重新计算裁剪位置
+            if (sourceImage) {
+                updateCropFromCornerMode();
+                redraw();
+            }
+        }
+
+        function loadConfigFromType(type) {
+            const config = WATERMARK_CONFIGS[type];
+            if (!config) return;
+
+            // 更新 UI 控件
+            document.getElementById('cropWidth').value = config.wmWidth;
+            document.getElementById('cropWidthVal').textContent = config.wmWidth;
+            document.getElementById('cropHeight').value = config.wmHeight;
+            document.getElementById('cropHeightVal').textContent = config.wmHeight;
+            document.getElementById('marginRight').value = config.marginRight;
+            document.getElementById('marginRightVal').textContent = config.marginRight;
+            document.getElementById('marginBottom').value = config.marginBottom;
+            document.getElementById('marginBottomVal').textContent = config.marginBottom;
+            document.getElementById('cropWidthManual').value = config.wmWidth;
+            document.getElementById('cropHeightManual').value = config.wmHeight;
+
+            // 更新裁剪矩形
+            cropRect.width = config.wmWidth;
+            cropRect.height = config.wmHeight;
+
+            // 更新类型指示器
+            const indicator = document.getElementById('currentTypeIndicator');
+            indicator.className = `watermark-type-indicator ${config.cssClass}`;
+            indicator.innerHTML = `<span>📍 当前配置: ${config.name}</span>`;
+        }
+
         // ========== 图片放大模态框功能 ==========
         function showModal(canvasId) {
             const sourceCanvas = document.getElementById(canvasId);
-            if (sourceCanvas.width <= 1) return; // 空画布不显示
+            if (sourceCanvas.width <= 1) return;
             
             const modal = document.getElementById('imageModal');
             const modalCanvas = document.getElementById('modalCanvas');
             const modalInfo = document.getElementById('modalInfo');
             
-            // 复制画布内容
             modalCanvas.width = sourceCanvas.width;
             modalCanvas.height = sourceCanvas.height;
             const ctx = modalCanvas.getContext('2d');
             ctx.drawImage(sourceCanvas, 0, 0);
             
-            // 显示信息
             const labels = {
                 'cropPreview': '裁剪预览',
                 'templatePreview': '当前模板',
@@ -844,7 +984,6 @@
             document.body.style.overflow = '';
         }
 
-        // ESC 键关闭模态框
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeModal();
@@ -852,7 +991,6 @@
         });
 
         function setupEventListeners() {
-            // Slider controls
             ['cropWidth', 'cropHeight', 'marginRight', 'marginBottom'].forEach(id => {
                 const el = document.getElementById(id);
                 el.addEventListener('input', () => {
@@ -862,7 +1000,6 @@
                 });
             });
 
-            // Manual input controls
             ['cropX', 'cropY', 'cropWidthManual', 'cropHeightManual'].forEach(id => {
                 const el = document.getElementById(id);
                 el.addEventListener('input', () => {
@@ -871,7 +1008,6 @@
                 });
             });
 
-            // Canvas mouse events for dragging
             mainCanvas.addEventListener('mousedown', onMouseDown);
             mainCanvas.addEventListener('mousemove', onMouseMove);
             mainCanvas.addEventListener('mouseup', onMouseUp);
@@ -879,15 +1015,16 @@
         }
 
         function loadDefaultImage() {
+            const config = WATERMARK_CONFIGS[currentWatermarkType];
             const img = new Image();
             img.onload = () => {
                 sourceImage = img;
                 initializeForImage();
             };
             img.onerror = () => {
-                alert('无法加载默认图片: assets/doubao1672x2508.png');
+                alert(`无法加载默认图片: ${config.defaultImagePath}`);
             };
-            img.src = 'assets/doubao1672x2508.png';
+            img.src = config.defaultImagePath;
         }
 
         function loadCustomImage(event) {
@@ -905,33 +1042,35 @@
         function initializeForImage() {
             if (!sourceImage) return;
 
-            // Update image info
             document.getElementById('imageInfo').style.display = 'block';
             document.getElementById('imageDimensions').textContent = 
                 `${sourceImage.width} × ${sourceImage.height}`;
             document.getElementById('imageRatio').textContent = 
                 (sourceImage.width / sourceImage.height).toFixed(4);
 
-            // Set canvas size
             mainCanvas.width = sourceImage.width;
             mainCanvas.height = sourceImage.height;
 
-            // Fit to screen initially
             fitToScreen();
-
-            // Set initial crop area to bottom-right corner
             updateCropFromCornerMode();
             redraw();
         }
 
         function loadExistingTemplate() {
+            const config = WATERMARK_CONFIGS[currentWatermarkType];
             const img = new Image();
             img.onload = () => {
                 templatePreview.width = img.width;
                 templatePreview.height = img.height;
                 templatePreviewCtx.drawImage(img, 0, 0);
             };
-            img.src = 'assets/doubao_bg_2x3.png';
+            img.onerror = () => {
+                // 模板不存在时清空预览
+                templatePreview.width = 1;
+                templatePreview.height = 1;
+                templatePreviewCtx.clearRect(0, 0, 1, 1);
+            };
+            img.src = config.templatePath;
         }
 
         function updateCropFromCornerMode() {
@@ -949,7 +1088,6 @@
                 height: height
             };
 
-            // Sync to manual mode inputs
             document.getElementById('cropX').value = Math.round(cropRect.x);
             document.getElementById('cropY').value = Math.round(cropRect.y);
             document.getElementById('cropWidthManual').value = cropRect.width;
@@ -984,8 +1122,10 @@
 
             const marginRight = Math.round(sourceImage.width - cropRect.x - cropRect.width);
             const marginBottom = Math.round(sourceImage.height - cropRect.y - cropRect.height);
+            const config = WATERMARK_CONFIGS[currentWatermarkType];
 
-            const config = `'2x3': {
+            const configCode = `// ${config.name} 配置
+'${currentWatermarkType}': {
     refWidth: ${sourceImage.width},
     refHeight: ${sourceImage.height},
     wmWidth: ${cropRect.width},
@@ -993,7 +1133,7 @@
     marginRight: ${marginRight},
     marginBottom: ${marginBottom}
 }`;
-            document.getElementById('configOutput').textContent = config;
+            document.getElementById('configOutput').textContent = configCode;
         }
 
         function updateCropPreview() {
@@ -1011,35 +1151,26 @@
         function redraw() {
             if (!sourceImage) return;
 
-            // Clear and draw source image
             ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
             ctx.drawImage(sourceImage, 0, 0);
 
-            // Draw crop rectangle
             ctx.strokeStyle = boxColor;
             ctx.lineWidth = 2 / currentZoom;
             ctx.setLineDash([5 / currentZoom, 5 / currentZoom]);
             ctx.strokeRect(cropRect.x, cropRect.y, cropRect.width, cropRect.height);
             ctx.setLineDash([]);
 
-            // Draw semi-transparent overlay
             ctx.fillStyle = boxColor + '33';
             ctx.fillRect(cropRect.x, cropRect.y, cropRect.width, cropRect.height);
 
-            // Draw corner handles
             const handleSize = 8 / currentZoom;
             ctx.fillStyle = boxColor;
             
-            // Top-left
             ctx.fillRect(cropRect.x - handleSize/2, cropRect.y - handleSize/2, handleSize, handleSize);
-            // Top-right
             ctx.fillRect(cropRect.x + cropRect.width - handleSize/2, cropRect.y - handleSize/2, handleSize, handleSize);
-            // Bottom-left
             ctx.fillRect(cropRect.x - handleSize/2, cropRect.y + cropRect.height - handleSize/2, handleSize, handleSize);
-            // Bottom-right
             ctx.fillRect(cropRect.x + cropRect.width - handleSize/2, cropRect.y + cropRect.height - handleSize/2, handleSize, handleSize);
 
-            // Draw dimension labels
             ctx.fillStyle = boxColor;
             ctx.font = `${14 / currentZoom}px JetBrains Mono, monospace`;
             ctx.fillText(
@@ -1096,7 +1227,6 @@
             redraw();
         }
 
-        // Mouse dragging for crop rectangle
         function onMouseDown(e) {
             if (!sourceImage) return;
             
@@ -1104,7 +1234,6 @@
             const x = (e.clientX - rect.left) / currentZoom;
             const y = (e.clientY - rect.top) / currentZoom;
 
-            // Check if clicking inside crop rect
             if (x >= cropRect.x && x <= cropRect.x + cropRect.width &&
                 y >= cropRect.y && y <= cropRect.y + cropRect.height) {
                 isDragging = true;
@@ -1123,11 +1252,9 @@
             cropRect.x = Math.max(0, Math.min(sourceImage.width - cropRect.width, x - dragStart.x));
             cropRect.y = Math.max(0, Math.min(sourceImage.height - cropRect.height, y - dragStart.y));
 
-            // Update UI
             document.getElementById('cropX').value = Math.round(cropRect.x);
             document.getElementById('cropY').value = Math.round(cropRect.y);
             
-            // Update margin sliders if in corner mode
             const marginRight = Math.round(sourceImage.width - cropRect.x - cropRect.width);
             const marginBottom = Math.round(sourceImage.height - cropRect.y - cropRect.height);
             document.getElementById('marginRight').value = marginRight;
@@ -1161,9 +1288,9 @@
                 0, 0, cropRect.width, cropRect.height
             );
 
-            // Download
+            const config = WATERMARK_CONFIGS[currentWatermarkType];
             const link = document.createElement('a');
-            link.download = `doubao_bg_2x3_${cropRect.width}x${cropRect.height}.png`;
+            link.download = `${currentWatermarkType}_bg_${cropRect.width}x${cropRect.height}.png`;
             link.href = exportCanvas.toDataURL('image/png');
             link.click();
         }
@@ -1185,35 +1312,29 @@
             img.onload = () => {
                 testImage = img;
                 
-                // 显示测试图片信息
                 document.getElementById('testImageInfo').style.display = 'block';
                 document.getElementById('testImageDimensions').textContent = 
                     `${img.width} × ${img.height}`;
                 
-                // 计算水印区域
                 const wmConfig = calculateWatermarkPosition(img.width, img.height);
                 document.getElementById('scaledWatermarkSize').textContent = 
                     `${wmConfig.width} × ${wmConfig.height}`;
                 document.getElementById('watermarkPosition').textContent = 
                     `(${wmConfig.x}, ${wmConfig.y})`;
                 
-                // 显示原图
                 originalCanvas.width = img.width;
                 originalCanvas.height = img.height;
                 originalCtx.drawImage(img, 0, 0);
                 
-                // 在原图上标记水印区域
                 originalCtx.strokeStyle = '#ef4444';
                 originalCtx.lineWidth = 2;
                 originalCtx.setLineDash([5, 5]);
                 originalCtx.strokeRect(wmConfig.x, wmConfig.y, wmConfig.width, wmConfig.height);
                 originalCtx.setLineDash([]);
                 
-                // 启用处理按钮
                 document.getElementById('processBtn').disabled = false;
                 document.getElementById('downloadBtn').disabled = true;
                 
-                // 清空处理结果
                 processedCanvas.width = 1;
                 processedCanvas.height = 1;
                 processedCtx.clearRect(0, 0, 1, 1);
@@ -1225,7 +1346,6 @@
 
         function calculateWatermarkPosition(imgWidth, imgHeight) {
             if (!sourceImage) {
-                // 使用默认配置
                 return {
                     x: imgWidth - cropRect.width,
                     y: imgHeight - cropRect.height,
@@ -1235,13 +1355,11 @@
                 };
             }
 
-            // 基于模板图尺寸计算缩放
             const refWidth = sourceImage.width;
             const refHeight = sourceImage.height;
             const marginRight = refWidth - cropRect.x - cropRect.width;
             const marginBottom = refHeight - cropRect.y - cropRect.height;
             
-            // 计算缩放因子 (基于短边)
             const refShortEdge = Math.min(refWidth, refHeight);
             const imgShortEdge = Math.min(imgWidth, imgHeight);
             const scale = imgShortEdge / refShortEdge;
@@ -1270,31 +1388,23 @@
             statusEl.innerHTML = '<span class="result-badge processing">⏳ 正在处理...</span>';
             document.getElementById('processBtn').disabled = true;
 
-            // 延迟执行以显示处理状态
             await new Promise(resolve => setTimeout(resolve, 50));
 
             try {
-                // 获取水印配置
                 const wmConfig = calculateWatermarkPosition(testImage.width, testImage.height);
                 
-                // 创建处理画布
                 processedCanvas.width = testImage.width;
                 processedCanvas.height = testImage.height;
                 processedCtx.drawImage(testImage, 0, 0);
                 
-                // 获取图像数据
                 const imageData = processedCtx.getImageData(0, 0, testImage.width, testImage.height);
                 
-                // 从裁剪区域生成 alpha map
                 const alphaMap = await generateAlphaMapFromCrop(wmConfig.width, wmConfig.height);
                 
-                // 执行水印移除
                 removeWatermark(imageData, alphaMap, wmConfig);
                 
-                // 写回图像数据
                 processedCtx.putImageData(imageData, 0, 0);
                 
-                // 在结果上标记处理区域 (用绿色虚线)
                 processedCtx.strokeStyle = '#22c55e';
                 processedCtx.lineWidth = 2;
                 processedCtx.setLineDash([5, 5]);
@@ -1313,17 +1423,14 @@
         }
 
         async function generateAlphaMapFromCrop(targetWidth, targetHeight) {
-            // 从裁剪区域获取模板图像数据
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = targetWidth;
             tempCanvas.height = targetHeight;
             const tempCtx = tempCanvas.getContext('2d');
             
-            // 使用高质量缩放
             tempCtx.imageSmoothingEnabled = true;
             tempCtx.imageSmoothingQuality = 'high';
             
-            // 从源图像裁剪区域绘制并缩放到目标尺寸
             tempCtx.drawImage(
                 sourceImage,
                 cropRect.x, cropRect.y, cropRect.width, cropRect.height,
@@ -1332,15 +1439,9 @@
             
             const imageData = tempCtx.getImageData(0, 0, targetWidth, targetHeight);
             
-            // 计算 alpha map
             return calculateAlphaMap(imageData);
         }
 
-        /**
-         * 从纯黑背景水印图计算 alpha 值
-         * 原理: 如果纯黑背景变成了灰色，说明有半透明水印覆盖
-         * alpha = R / 255 (对于白色水印覆盖在黑色背景上)
-         */
         function calculateAlphaMap(imageData) {
             const data = imageData.data;
             const width = imageData.width;
@@ -1352,8 +1453,6 @@
                 const g = data[i * 4 + 1];
                 const b = data[i * 4 + 2];
                 
-                // 使用 RGB 平均值计算 alpha
-                // 纯黑应该是 0，纯白应该是 1
                 const luminance = (r + g + b) / 3;
                 alphaMap[i] = luminance / 255;
             }
@@ -1361,10 +1460,6 @@
             return alphaMap;
         }
 
-        /**
-         * 移除水印 (逆向 alpha 混合)
-         * 公式: original = (blended - watermark * alpha) / (1 - alpha)
-         */
         function removeWatermark(imageData, alphaMap, position) {
             const data = imageData.data;
             const imgWidth = imageData.width;
@@ -1378,7 +1473,6 @@
                     const imgX = wmX + x;
                     const imgY = wmY + y;
                     
-                    // 边界检查
                     if (imgX < 0 || imgX >= imgWidth || imgY < 0 || imgY >= imageData.height) {
                         continue;
                     }
@@ -1387,26 +1481,19 @@
                     const alphaIdx = y * wmWidth + x;
                     const alpha = alphaMap[alphaIdx];
                     
-                    // 如果 alpha 太小，跳过 (避免除以接近0的数)
                     if (alpha < 0.01) continue;
                     
-                    // 如果 alpha 太大 (接近不透明)，也需要特殊处理
                     if (alpha > 0.99) {
-                        // 几乎完全不透明的水印，无法恢复原始像素
                         continue;
                     }
                     
-                    // 逆向 alpha 混合
-                    // 假设水印颜色是白色 (255, 255, 255)
                     const watermarkColor = 255;
                     const oneMinusAlpha = 1 - alpha;
                     
                     for (let c = 0; c < 3; c++) {
                         const blendedValue = data[imgIdx + c];
-                        // original = (blended - watermark * alpha) / (1 - alpha)
                         let originalValue = (blendedValue - watermarkColor * alpha) / oneMinusAlpha;
                         
-                        // Clamp to valid range
                         originalValue = Math.max(0, Math.min(255, Math.round(originalValue)));
                         data[imgIdx + c] = originalValue;
                     }
@@ -1420,13 +1507,11 @@
                 return;
             }
 
-            // 重新绘制不带边框的结果
             const exportCanvas = document.createElement('canvas');
             exportCanvas.width = testImage.width;
             exportCanvas.height = testImage.height;
             const exportCtx = exportCanvas.getContext('2d');
             
-            // 重新处理得到干净的结果
             exportCtx.drawImage(testImage, 0, 0);
             const imageData = exportCtx.getImageData(0, 0, testImage.width, testImage.height);
             const wmConfig = calculateWatermarkPosition(testImage.width, testImage.height);
@@ -1436,7 +1521,7 @@
                 exportCtx.putImageData(imageData, 0, 0);
                 
                 const link = document.createElement('a');
-                link.download = `processed_${Date.now()}.png`;
+                link.download = `processed_${currentWatermarkType}_${Date.now()}.png`;
                 link.href = exportCanvas.toDataURL('image/png');
                 link.click();
             });
